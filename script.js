@@ -70,5 +70,13 @@ class WeatherApp {
                 this.recentCitiesDropdown.classList.add('hidden');
             }
         });
+          // Show recent cities when focusing on input
+        this.cityInput.addEventListener('focus', () => {
+            if (this.recentCities.length > 0) {
+                this.recentCitiesDropdown.classList.remove('hidden');
+            }
+        });
+    }
+
 }
-}
+
