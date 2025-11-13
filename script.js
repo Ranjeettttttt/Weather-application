@@ -48,4 +48,20 @@ class WeatherApp {
         // App container for background changes
         this.appContainer = document.getElementById('app');
 
+         bindEvents() {
+        this.searchBtn.addEventListener('click', () => this.searchWeather());
+        this.currentLocationBtn.addEventListener('click', () => this.getCurrentLocationWeather());
+        this.unitToggle.addEventListener('click', () => this.toggleTemperatureUnit());
+        this.cityInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.searchWeather();
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.cityInput.contains(e.target) && !this.recentCitiesDropdown.contains(e.target)) {
+                this.recentCitiesDropdown.classList.add('hidden');
+            }
+        });
+
  }}
+}
