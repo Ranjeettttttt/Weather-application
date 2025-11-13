@@ -24,4 +24,15 @@ class WeatherApp {
         this.alertSection = document.getElementById('alertSection');
         this.errorSection = document.getElementById('errorSection');
 
+         // Current weather elements
+        this.cityName = document.getElementById('cityName');
+        this.currentDate = document.getElementById('currentDate');
+        this.weatherIcon = document.getElementById('weatherIcon');
+        this.weatherDescription = document.getElementById('weatherDescription');
+        this.temperature = document.getElementById('temperature');
+        this.windSpeed = document.getElementById('windSpeed');
+        this.humidity = document.getElementById('humidity');
+        this.feelsLike = document.getElementById('feelsLike');
+
+
  }}
