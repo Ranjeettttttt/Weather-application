@@ -10,3 +10,10 @@ class WeatherApp {
         this.bindEvents();
         this.displayRecentCities();
     }
+ initializeElements() {
+        // Input and buttons
+        this.cityInput = document.getElementById('cityInput');
+        this.searchBtn = document.getElementById('searchBtn');
+        this.currentLocationBtn = document.getElementById('currentLocationBtn');
+        this.unitToggle = document.getElementById('unitToggle');
+ }}
