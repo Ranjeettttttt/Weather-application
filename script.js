@@ -63,5 +63,12 @@ class WeatherApp {
             }
         });
 
- }}
+ }
+  // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.cityInput.contains(e.target) && !this.recentCitiesDropdown.contains(e.target)) {
+                this.recentCitiesDropdown.classList.add('hidden');
+            }
+        });
+}
 }
