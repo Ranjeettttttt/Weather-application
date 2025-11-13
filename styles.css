@@ -1,0 +1,93 @@
+/* Custom styles to complement Tailwind CSS */
+
+/* Background gradients for different weather conditions */
+.sunny-bg {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+
+.cloudy-bg {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+}
+
+.rainy-bg {
+    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+}
+
+.snowy-bg {
+    background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+}
+
+.stormy-bg {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.night-bg {
+    background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
+    color: white;
+}
+
+/* Animation for weather icons */
+.weather-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Loading spinner */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Custom scrollbar for recent cities dropdown */
+#recentCities::-webkit-scrollbar {
+    width: 6px;
+}
+
+#recentCities::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 0 10px 10px;
+}
+
+#recentCities::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    #temperature {
+        font-size: 2.5rem;
+    }
+}
+
+/* Transition for background changes */
+#app {
+    transition: background 0.5s ease;
+}
