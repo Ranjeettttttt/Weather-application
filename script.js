@@ -1,27 +1,37 @@
 // Weather Forecast Application
 class WeatherApp {
     constructor() {
-        this.apiKey = 'efec63400067919846d9e8b8513e3b81'; // Replace with your actual API key
+        // API configuration - replace with your actual OpenWeatherMap API key
+        this.apiKey = 'efec63400067919846d9e8b8513e3b81';
         this.baseUrl = 'https://api.openweathermap.org/data/2.5';
+        
+        // Temperature unit preference (default to Celsius)
         this.isCelsius = true;
+        
+        // Load recent cities from localStorage or initialize empty array
         this.recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
 
+        // Initialize DOM elements and event listeners
         this.initializeElements();
         this.bindEvents();
         this.displayRecentCities();
     }
 
+    // Cache all DOM elements for easy access
     initializeElements() {
+        // Input elements
         this.cityInput = document.getElementById('cityInput');
         this.searchBtn = document.getElementById('searchBtn');
         this.currentLocationBtn = document.getElementById('currentLocationBtn');
         this.unitToggle = document.getElementById('unitToggle');
 
+        // Section containers
         this.currentWeatherSection = document.getElementById('currentWeather');
         this.forecastSection = document.getElementById('forecastSection');
         this.alertSection = document.getElementById('alertSection');
         this.errorSection = document.getElementById('errorSection');
 
+        // Current weather display elements
         this.cityName = document.getElementById('cityName');
         this.currentDate = document.getElementById('currentDate');
         this.weatherIcon = document.getElementById('weatherIcon');
@@ -31,29 +41,42 @@ class WeatherApp {
         this.humidity = document.getElementById('humidity');
         this.feelsLike = document.getElementById('feelsLike');
 
+        // Forecast and history elements
         this.forecastContainer = document.getElementById('forecastContainer');
         this.recentCitiesDropdown = document.getElementById('recentCities');
 
+        // Message display elements
         this.alertMessage = document.getElementById('alertMessage');
         this.errorMessage = document.getElementById('errorMessage');
 
+        // Main app container for background changes
         this.appContainer = document.getElementById('app');
     }
 
+    // Set up all event listeners
     bindEvents() {
+        // Search button click handler
         this.searchBtn.addEventListener('click', () => this.searchWeather());
+        
+        // Current location button click handler
         this.currentLocationBtn.addEventListener('click', () => this.getCurrentLocationWeather());
+        
+        // Temperature unit toggle handler
         this.unitToggle.addEventListener('click', () => this.toggleTemperatureUnit());
+        
+        // Enter key handler for city input
         this.cityInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.searchWeather();
         });
 
+        // Close recent cities dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (!this.cityInput.contains(e.target) && !this.recentCitiesDropdown.contains(e.target)) {
                 this.recentCitiesDropdown.classList.add('hidden');
             }
         });
 
+        // Show recent cities dropdown when input is focused
         this.cityInput.addEventListener('focus', () => {
             if (this.recentCities.length > 0) {
                 this.recentCitiesDropdown.classList.remove('hidden');
@@ -61,38 +84,48 @@ class WeatherApp {
         });
     }
 
+    // Main weather search function
     async searchWeather() {
         const city = this.cityInput.value.trim();
 
+        // Validate input
         if (!city) {
             this.showError('Please enter a city name');
             return;
         }
 
+        // Reset UI state and show loading
         this.hideError();
         this.showLoading();
 
         try {
+            // Fetch both current weather and forecast data
             const currentWeather = await this.fetchCurrentWeather(city);
             const forecast = await this.fetchForecast(city);
 
+            // Update UI with fetched data
             this.displayCurrentWeather(currentWeather);
             this.displayForecast(forecast);
             this.updateRecentCities(city);
             this.checkForAlerts(currentWeather);
             this.changeBackground(currentWeather.weather[0].main);
 
+            // Show weather sections
             this.currentWeatherSection.classList.remove('hidden');
             this.forecastSection.classList.remove('hidden');
         } catch (error) {
+            // Handle errors gracefully
             this.showError('City not found. Please check the spelling and try again.');
             console.error('Error fetching weather data:', error);
         }
 
+        // Restore UI state
         this.hideLoading();
     }
 
+    // Get weather for user's current location using geolocation API
     async getCurrentLocationWeather() {
+        // Check if browser supports geolocation
         if (!navigator.geolocation) {
             this.showError('Geolocation is not supported by your browser');
             return;
@@ -101,20 +134,24 @@ class WeatherApp {
         this.hideError();
         this.showLoading();
 
+        // Request user's current position
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { latitude, longitude } = position.coords;
 
                 try {
+                    // Fetch weather data using coordinates
                     const currentWeather = await this.fetchWeatherByCoords(latitude, longitude);
                     const forecast = await this.fetchForecastByCoords(latitude, longitude);
 
+                    // Update UI with fetched data
                     this.displayCurrentWeather(currentWeather);
                     this.displayForecast(forecast);
                     this.updateRecentCities(currentWeather.name);
                     this.checkForAlerts(currentWeather);
                     this.changeBackground(currentWeather.weather[0].main);
 
+                    // Show weather sections
                     this.currentWeatherSection.classList.remove('hidden');
                     this.forecastSection.classList.remove('hidden');
                 } catch (error) {
@@ -125,6 +162,7 @@ class WeatherApp {
                 this.hideLoading();
             },
             (error) => {
+                // Handle geolocation errors
                 this.showError('Unable to retrieve your location. Please check location permissions.');
                 this.hideLoading();
                 console.error('Geolocation error:', error);
@@ -132,6 +170,7 @@ class WeatherApp {
         );
     }
 
+    // Fetch current weather data for a city
     async fetchCurrentWeather(city) {
         const response = await fetch(
             `${this.baseUrl}/weather?q=${city}&appid=${this.apiKey}&units=metric`
@@ -141,6 +180,7 @@ class WeatherApp {
         return await response.json();
     }
 
+    // Fetch 5-day forecast data for a city
     async fetchForecast(city) {
         const response = await fetch(
             `${this.baseUrl}/forecast?q=${city}&appid=${this.apiKey}&units=metric`
@@ -150,6 +190,7 @@ class WeatherApp {
         return await response.json();
     }
 
+    // Fetch current weather data using coordinates
     async fetchWeatherByCoords(lat, lon) {
         const response = await fetch(
             `${this.baseUrl}/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`
@@ -159,6 +200,7 @@ class WeatherApp {
         return await response.json();
     }
 
+    // Fetch 5-day forecast data using coordinates
     async fetchForecastByCoords(lat, lon) {
         const response = await fetch(
             `${this.baseUrl}/forecast?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`
@@ -168,7 +210,9 @@ class WeatherApp {
         return await response.json();
     }
 
+    // Display current weather data in the UI
     displayCurrentWeather(data) {
+        // Update location and date
         this.cityName.textContent = `${data.name}, ${data.sys.country}`;
         this.currentDate.textContent = new Date().toLocaleDateString('en-US', {
             weekday: 'long',
@@ -177,20 +221,24 @@ class WeatherApp {
             day: 'numeric',
         });
 
+        // Update weather icon and description
         const weather = data.weather[0];
         this.weatherIcon.src = `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
         this.weatherIcon.alt = weather.description;
         this.weatherDescription.textContent = this.capitalizeFirstLetter(weather.description);
 
+        // Update temperature and weather details
         this.updateTemperatureDisplay(data.main.temp, data.main.feels_like);
         this.windSpeed.textContent = `${data.wind.speed} m/s`;
         this.humidity.textContent = `${data.main.humidity}%`;
     }
 
+    // Display 5-day forecast in the UI
     displayForecast(data) {
         this.forecastContainer.innerHTML = '';
         const dailyForecasts = {};
 
+        // Process forecast data to get one reading per day (preferably midday)
         data.list.forEach((item) => {
             const date = new Date(item.dt * 1000);
             const dateString = date.toDateString();
@@ -200,8 +248,10 @@ class WeatherApp {
             }
         });
 
+        // Get next 5 days of forecast (excluding today)
         const forecastDates = Object.keys(dailyForecasts).slice(1, 6);
 
+        // Create forecast cards for each day
         forecastDates.forEach((dateString) => {
             const forecast = dailyForecasts[dateString];
             const date = new Date(dateString);
@@ -224,6 +274,7 @@ class WeatherApp {
         });
     }
 
+    // Update temperature display based on current unit preference
     updateTemperatureDisplay(temp, feelsLike) {
         if (this.isCelsius) {
             this.temperature.textContent = `${Math.round(temp)}°C`;
@@ -234,10 +285,12 @@ class WeatherApp {
         }
     }
 
+    // Toggle between Celsius and Fahrenheit
     toggleTemperatureUnit() {
         this.isCelsius = !this.isCelsius;
         this.unitToggle.textContent = this.isCelsius ? '°C / °F' : '°F / °C';
 
+        // Refresh display if weather data is already loaded
         if (this.currentWeatherSection.classList.contains('hidden')) return;
 
         const currentCity = this.cityName.textContent.split(',')[0];
@@ -247,15 +300,21 @@ class WeatherApp {
         }
     }
 
+    // Update recent cities list and persist to localStorage
     updateRecentCities(city) {
+        // Remove duplicate and add to beginning of array
         this.recentCities = this.recentCities.filter(c => c.toLowerCase() !== city.toLowerCase());
         this.recentCities.unshift(city);
+        
+        // Keep only last 5 cities
         if (this.recentCities.length > 5) this.recentCities.pop();
 
+        // Save to localStorage and update UI
         localStorage.setItem('recentCities', JSON.stringify(this.recentCities));
         this.displayRecentCities();
     }
 
+    // Display recent cities in dropdown
     displayRecentCities() {
         if (this.recentCities.length === 0) {
             this.recentCitiesDropdown.classList.add('hidden');
@@ -278,10 +337,12 @@ class WeatherApp {
         this.recentCitiesDropdown.classList.remove('hidden');
     }
 
+    // Check for extreme weather conditions and show alerts
     checkForAlerts(weatherData) {
         const temp = weatherData.main.temp;
         this.alertSection.classList.add('hidden');
 
+        // Show appropriate alert based on temperature
         if (temp > 40) {
             this.alertMessage.textContent = 'Extreme heat warning! Stay hydrated.';
             this.alertSection.classList.remove('hidden');
@@ -291,12 +352,15 @@ class WeatherApp {
         }
     }
 
+    // Change background based on weather condition and time of day
     changeBackground(weatherCondition) {
+        // Remove all weather background classes
         this.appContainer.classList.remove('sunny-bg', 'cloudy-bg', 'rainy-bg', 'snowy-bg', 'stormy-bg', 'night-bg');
 
         const condition = weatherCondition.toLowerCase();
         const hour = new Date().getHours();
 
+        // Determine appropriate background based on condition and time
         if (condition.includes('clear')) {
             this.appContainer.classList.add(hour >= 6 && hour < 18 ? 'sunny-bg' : 'night-bg');
         } else if (condition.includes('cloud')) {
@@ -312,6 +376,7 @@ class WeatherApp {
         }
     }
 
+    // Show error message to user
     showError(message) {
         this.errorMessage.textContent = message;
         this.errorSection.classList.remove('hidden');
@@ -320,27 +385,32 @@ class WeatherApp {
         this.alertSection.classList.add('hidden');
     }
 
+    // Hide error message
     hideError() {
         this.errorSection.classList.add('hidden');
     }
 
+    // Show loading state on buttons
     showLoading() {
         this.searchBtn.disabled = true;
         this.currentLocationBtn.disabled = true;
         this.searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Searching...';
     }
 
+    // Hide loading state and restore button text
     hideLoading() {
         this.searchBtn.disabled = false;
         this.currentLocationBtn.disabled = false;
         this.searchBtn.innerHTML = '<i class="fas fa-search mr-2"></i> Search';
     }
 
+    // Utility function to capitalize first letter of string
     capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 }
 
+// Initialize the weather app when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     new WeatherApp();
 });

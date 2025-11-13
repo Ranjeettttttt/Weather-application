@@ -66,12 +66,12 @@
 }
 
 #recentCities::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #757575;
     border-radius: 0 0 10px 10px;
 }
 
 #recentCities::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: #484848;
     border-radius: 10px;
 }
 
@@ -91,3 +91,18 @@
 #app {
     transition: background 0.5s ease;
 }
+
+
+/* Simple background classes used by JS */
+.sunny-bg { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.cloudy-bg { background: linear-gradient(135deg, #d7e1ec 0%, #edf2f7 100%); }
+.rainy-bg { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+.snowy-bg { background: linear-gradient(135deg, #e6f0ff 0%, #f7fbff 100%); }
+.stormy-bg { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); }
+.night-bg { background: linear-gradient(135deg, #2b2b52 0%, #121229 100%); color: #fff; }
+
+/* Small responsive tweaks */
+#weatherIcon { width: 64px; height: 64px; object-fit: contain; }
+#recentCities { max-height: 220px; overflow-y: auto; }
+.forecast-card img { width: 48px; height: 48px; object-fit: contain; }
+
