@@ -35,4 +35,17 @@ class WeatherApp {
         this.feelsLike = document.getElementById('feelsLike');
 
 
+         // Forecast container
+        this.forecastContainer = document.getElementById('forecastContainer');
+        
+        // Recent cities dropdown
+        this.recentCitiesDropdown = document.getElementById('recentCities');
+        
+        // Alert and error messages
+        this.alertMessage = document.getElementById('alertMessage');
+        this.errorMessage = document.getElementById('errorMessage');
+        
+        // App container for background changes
+        this.appContainer = document.getElementById('app');
+
  }}
