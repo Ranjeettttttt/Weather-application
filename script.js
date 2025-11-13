@@ -16,4 +16,12 @@ class WeatherApp {
         this.searchBtn = document.getElementById('searchBtn');
         this.currentLocationBtn = document.getElementById('currentLocationBtn');
         this.unitToggle = document.getElementById('unitToggle');
+
+          
+        // Display sections
+        this.currentWeatherSection = document.getElementById('currentWeather');
+        this.forecastSection = document.getElementById('forecastSection');
+        this.alertSection = document.getElementById('alertSection');
+        this.errorSection = document.getElementById('errorSection');
+
  }}
